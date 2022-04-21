@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/bin/env python3
 """Using Type Checking"""
 
 from typing import Tuple, List
