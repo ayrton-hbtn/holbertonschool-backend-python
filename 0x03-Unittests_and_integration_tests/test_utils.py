@@ -68,4 +68,4 @@ class TestMemoize(unittest.TestCase):
             spec = TestClass()
             spec.a_property
             spec.a_property
-            mocked.asset_called_once()
+            mocked.assert_called_once()
