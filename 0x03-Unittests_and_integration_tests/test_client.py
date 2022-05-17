@@ -75,31 +75,37 @@ class TestGithubOrgClient(unittest.TestCase):
     TEST_PAYLOAD
 )
 class TestIntegrationGithubOrgClient(unittest.TestCase):
-    """
-    Integration class to test GithubOrgClient.public_repos method
-    """
+    """an integration test for githuborg client"""
+
     @classmethod
     def setUpClass(cls):
-        """setUpClass method"""
-        cls.get_patcher = patch(
-            'requests.get',
-            side_effect=[
-                org_payload,
-                repos_payload
-            ]
-        )
-        cls.get_patcher.start()
-
-    @classmethod
-    def tearDownClass(cls):
-        """ tearDownClass method"""
-        cls.get_patcher.stop()
+        """ set up class befor each method"""
+        config = {'return_value.json.side_effect':
+                  [
+                    cls.org_payload, cls.repos_payload,
+                    cls.org_payload, cls.repos_payload
+                  ]
+                  }
+        cls.get_patcher = patch('requests.get', **config)
+        cls.mock = cls.get_patcher.start()
 
     def test_public_repos(self):
-        """ Testing GithubOrgClient.public_repos """
-        ghc = GithubOrgClient('random')
-        self.assertEqual(ghc.org, self.org_payload)
-        self.assertEqual(ghc.repos_payload, self.repos_payload)
+        """add some more integration"""
+        tst_cls = GithubOrgClient('Facebook')
+        self.assertEqual(tst_cls.org, self.org_payload)
+        self.assertEqual(tst_cls.repos_payload, self.repos_payload)
+        self.assertEqual(tst_cls.public_repos(), self.expected_repos)
+        self.mock.assert_called()
+
+    def test_public_repos_with_license(self):
+        """ method to test the public_repos with the argument license """
+        test_class = GithubOrgClient("holberton")
+        assert True
+
+    @classmethod
+    def tearDownClass(cls) -> None:
+        """tear down after each class"""
+        cls.get_patcher.stop()
 
 
 if __name__ == "__main__":
